@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "amorini",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-12",
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "OPENAI_MODEL": "gpt-4.1-mini"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "agenzia-viaggi",
+      "database_id": "805250e6-268b-446c-968b-f49a5bbee559",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

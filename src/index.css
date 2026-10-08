@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@custom-variant phone-land (@media (orientation: landscape) and (max-height: 560px));
+@custom-variant phone-port (@media (orientation: portrait) and (max-width: 767px));
+@custom-variant phone {
+  @media (max-width: 767px) {
+    @slot;
+  }
+  @media (orientation: landscape) and (max-height: 560px) {
+    @slot;
+  }
+}
+
+@theme {
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+}
+
+:root {
+  --color-paper: #f5f2e9;
+  --color-ink: #17211c;
+  --color-forest: #274638;
+  --color-clay: #9b5b35;
+  --color-sand: #e6ddd0;
+  --color-line: #d8d0c3;
+  --color-mute: #5d675f;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+.travel-map-expanded {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  z-index: 2000;
+  background: var(--color-paper);
+}
+
+.travel-map-expanded .leaflet-container {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.trip-action-icon {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 767px) {
+  .trip-tabs-row {
+    min-width: 0;
+    width: 100%;
+  }
+  .trip-tabs-row .trip-tab {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 767px), (orientation: landscape) and (max-height: 560px) {
+  .trip-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 104px;
+    border-radius: 1rem;
+  }
+  .trip-header-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .trip-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: calc(100% - 16px);
+    margin: 8px;
+    padding: 10px;
+    border-radius: 0.75rem;
+    background: rgb(0 0 0 / 65%);
+    color: white;
+    backdrop-filter: blur(3px);
+  }
+  .trip-header-content > * {
+    margin-block: 0;
+  }
+  .trip-header-country, .trip-action-label {
+    display: none;
+  }
+  .trip-header-content h1 {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.1rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .trip-header-actions {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 0;
+  }
+  .trip-header-action {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 44px;
+    padding: 0;
+    border-radius: 0.6rem;
+  }
+  .trip-action-icon {
+    display: block;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, #efe6d4, transparent 55%),
+    var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.card {
+  background: color-mix(in srgb, white 78%, var(--color-paper));
+  border: 1px solid var(--color-line);
+  border-radius: 1.5rem;
+}
+
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--color-forest);
+  color: white;
+  border: 0;
+}
+
+.btn-ghost {
+  background: white;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  opacity: 0.55;
+}
+
+.field {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid var(--color-line);
+  background: white;
+  padding: 0.55rem 0.75rem;
+}
+
+.stop-marker {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.stop-marker span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #274638;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px #f5f2e9;
+}
+
+.stop-marker-active span {
+  background: #9b5b35;
+  transform: scale(1.15);
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: #e9eee8;
+}

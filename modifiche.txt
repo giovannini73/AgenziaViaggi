@@ -1,0 +1,137 @@
+Registro modifiche — Itinerari aperti
+
+[01/09/2026] v1.0.31 — Versione nel titolo, si aggiorna da sola
+Richiesta: versione che si aggiorna a ogni compilazione e visibile nel titolo insieme al nome.
+Realizzato: in alto (e nella linguetta del browser) si legge «Itinerari aperti» e il numero di versione; a ogni pubblicazione il numero sale da solo.
+
+[27/08/2026] v1.0.30 — Note mentre si guarda un video
+Richiesta: mentre si guarda un video, poter prendere note legate alla tappa e visibili in un riassunto dell’itinerario.
+Realizzato: accanto al video si scrive una nota; resta sulla tappa e compare anche nella sezione Note in alto nell’itinerario.
+
+[27/08/2026] v1.0.29 — Versione visibile nel sito
+Richiesta: mostra versione del web nel web.
+Realizzato: in alto accanto al titolo (e in basso, e nella pagina di accesso) compare il numero di versione.
+
+[27/08/2026] v1.0.28 — Tasto «Da vedere» da toccare
+Richiesta: il tasto Da vedere deve essere cliccabile, niente di automatico.
+Realizzato: accanto alle stelle c’è un tasto; lo tocchi tu per segnare la tappa come vista, o per togliere il segno.
+
+[27/08/2026] v1.0.27 — Visto su ogni tappa, per ciascuno
+Richiesta: per ogni tappa e per ogni persona, un segno «visto» vicino alle stelle.
+Realizzato: Sabrina e Claudio possono segnare se hanno visto la tappa; il segno compare accanto al voto e l’altro lo vede.
+
+[27/08/2026] v1.0.26 — Menu tappe con voti sul telefono in verticale
+Richiesta: in portrait, lista tappe di nuovo a tendina, sempre con i voti di entrambi.
+Realizzato: si vede la tappa scelta con le stelle di Sabrina e Claudio; toccando si apre l’elenco, ogni voce ha nome e voti.
+
+[27/08/2026] v1.0.25 — Tappe a etichette sul telefono in verticale
+Richiesta: in portrait, lista tappe più bella, con nome e voti di entrambi.
+Realizzato: al posto del menu, ogni tappa è un riquadro con il nome e le stelle di Sabrina e Claudio.
+
+[27/08/2026] v1.0.24 — Elenco itinerari sul telefono in verticale
+Richiesta: in portrait mobile mostrare la lista degli itinerari, non un menu a tendina.
+Realizzato: in verticale si vedono tutte le schede; il menu resta solo in orizzontale stretto.
+
+[27/08/2026] v1.0.23 — Voti della prima password assegnati a Claudio
+Richiesta: trasportare i voti già dati con la password di Sabrina su Claudio.
+Realizzato: itinerari e tappe votati prima risultano di Claudio; Sabrina riparte senza voti.
+
+[27/08/2026] v1.0.23 — Due accessi e voti distinti
+Richiesta: seconda password per Claudio; Sabrina resta con la precedente; ciascuno vota per sé e vede il voto dell’altro.
+Realizzato: all’ingresso si capisce chi è; i voti di Sabrina e Claudio restano separati e visibili a entrambi.
+
+[27/08/2026] v1.0.22 — Icone e ricerca in alto sul telefono in verticale
+Richiesta: in portrait, Crea con AI, Nuovo itinerario ed Esci solo icone con suggerimento, e un campo cerca.
+Realizzato: in verticale quei tre tasti sono icone; tenendo premuto si legge cosa fanno. In mezzo c’è la ricerca.
+
+[27/08/2026] v1.0.21 — Vista telefono in verticale
+Richiesta: ottimizzare anche il portrait.
+Realizzato: in verticale header più basso, foto e mappa più piccole, testi più corti; si arriva prima alle tappe e alla scheda.
+
+[27/08/2026] v1.0.20 — Vista telefono in orizzontale
+Richiesta: ottimizzare la visualizzazione landscape sul mobile perché si vede male.
+Realizzato: in orizzontale l’intestazione è più compatta, mappa e tappe stanno affiancate, le tappe restano un menu e la pagina occupa meno spazio in altezza.
+
+[27/08/2026] v1.0.19 — Tappe a tendina sul telefono in verticale
+Richiesta: sul mobile in verticale le tappe devono essere un combobox, non una lista.
+Realizzato: sul telefono tenuto in verticale si sceglie la tappa da un menu; in orizzontale e sul computer resta la lista con le stelle.
+
+[27/08/2026] v1.0.18 — Lista itinerari a tendina sul telefono
+Richiesta: in modalità mobile la lista itinerari deve essere un combobox.
+Realizzato: sul telefono si sceglie l’itinerario da un menu a tendina; sotto compare la scheda. Sul computer restano le schede affiancate.
+
+[26/08/2026] v1.0.17 — Stelle su ogni tappa sotto la mappa
+Richiesta: sotto la mappa, nella lista tappe, mostrare il voto in stelle.
+Realizzato: ogni tappa della lista ha le stelle del voto medio.
+
+[26/08/2026] v1.0.16 — Ricerca YouTube nella finestra video
+Richiesta: nella finestra dei video poter cercare su YouTube.
+Realizzato: in alto c’è il campo Cerca: si possono scrivere parole o incollare un indirizzo YouTube.
+
+[25/08/2026] v1.0.15 — Chat collegata
+Richiesta: collegare la chat con la chiave.
+Realizzato: la chat sul sito pubblico è attiva.
+
+[25/08/2026] v1.0.15 — Password per entrare nel sito
+Richiesta: aggiungere una password per accedere.
+Realizzato: all’apertura compare la schermata di accesso; senza password il sito resta chiuso. In alto c’è anche Esci.
+
+[25/08/2026] v1.0.14 — Indirizzo pubblico amorini
+Richiesta: mettere il sito su https://amorini.giovannini73.workers.dev/
+Realizzato: il sito è pubblicato a quell’indirizzo.
+
+[25/08/2026] v1.0.13 — Pubblicazione su Cloudflare
+Richiesta: fare il collegamento e pubblicare.
+Realizzato: il sito è online; la chat AI in rete funzionerà dopo aver salvato la chiave del servizio.
+
+[25/08/2026] v1.0.12 — Rimosso Chat AI in alto
+Richiesta: togliere il tasto Chat AI nella parte alta, duplicato di quello in basso a destra.
+Realizzato: in alto non c’è più Chat AI; resta il pulsante in basso a destra.
+
+[25/08/2026] v1.0.11 — Preferito su foto e video della tappa
+Richiesta: ogni video e immagine nella dialog deve avere un tasto preferito che lo collega alla tappa.
+Realizzato: in foto e video ogni elemento ha «Preferito»; la scelta resta sulla tappa (la foto in copertina, il video con il cuoricino).
+
+[25/08/2026] v1.0.10 — Indietro nella finestra mappa, foto e video
+Richiesta: nella dialog mettere un tasto per navigare indietro.
+Realizzato: in mappa, immagini e video c’è il tasto «Indietro» con freccia, in alto e in basso, per tornare all’itinerario.
+
+[25/08/2026] v1.0.9 — Video YouTube nel riquadro
+Richiesta: i video davano sempre errore.
+Realizzato: il riquadro apre un video vero della tappa (nella lingua del browser) invece di una ricerca YouTube che non funziona più.
+
+[25/08/2026] v1.0.8 — Pulsanti tappa precedente e successiva
+Richiesta: avanti diventa «Prossima tappa» con freccia, indietro diventa «Tappa precedente» con freccia.
+Realizzato: sotto ogni tappa i due pulsanti hanno il nuovo testo e l’icona a freccia.
+
+[25/08/2026] v1.0.7 — Dettagli tappa aperti di default
+Richiesta: nome e dettagli della tappa devono essere espansi.
+Realizzato: la sezione «Nome e dettagli» di ogni tappa si apre già visibile; voto e commenti restano chiusi.
+
+[25/08/2026] v1.0.6 — Nome, voto e commenti dell’itinerario richiudibili
+Richiesta: anche nome, commento e voto dell’itinerario devono essere collassati ed espandibili.
+Realizzato: sulla pagina itinerario dettagli, voto e commenti del viaggio si aprono al tocco, come per le tappe.
+
+[25/08/2026] v1.0.5 — Tappe una alla volta, sezioni richiudibili e popup
+Richiesta: mostrare le tappe a wizard, collassare nome/commenti/voto ed aprire maps, immagini e video in un popup.
+Realizzato: nelle pagine itinerario si va avanti e indietro tra le tappe; dettagli, voto e commenti si aprono al tocco; maps, foto e video comparono in un riquadro senza lasciare la pagina.
+
+[25/08/2026] v1.0.4 — Correzione eliminazione itinerario
+Richiesta: l’eliminazione itinerario non funzionava e mostrava un errore.
+Realizzato: la cancellazione rimuove anche cronologia, chat e voti collegati, poi l’itinerario.
+
+[25/08/2026] v1.0.3 — Elimina itinerario con conferma
+Richiesta: aggiungere il tasto elimina itinerario con conferma.
+Realizzato: pulsante visibile sulla pagina dell’itinerario e in modifica; prima di cancellare compare una finestra di conferma.
+
+[25/08/2026] v1.0.2 — Chat AI per creare e modificare itinerari
+Richiesta: aggiungere la chat per creare/modificare itinerari, date, soste, cercare video e immagini.
+Realizzato: pannello chat e pagina «Crea con AI». Le proposte si vedono prima e si salvano solo con «Applica modifiche». Video e immagini seguono la lingua del browser.
+
+[25/08/2026] v1.0.1 — Video delle tappe nella lingua del browser
+Richiesta: i video delle tappe devono essere cercati preferibilmente nella lingua locale del browser.
+Realizzato: il collegamento YouTube usa la lingua e il paese del browser, con parole di ricerca locali (es. «viaggio» in italiano).
+
+[25/08/2026] v1.0.0 — Prima versione del portale pubblico
+Richiesta: trasformare gli itinerari statici in un sito dinamico con elenco, mappa, voti, commenti e modifica.
+Realizzato: sito React con backend Cloudflare, database D1, homepage, dettaglio, mappa, stelle, commenti, editor tappe e import di India, Sri Lanka, Cambogia e Filippine. Chat AI non ancora inclusa.
