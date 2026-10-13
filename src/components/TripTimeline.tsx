@@ -33,7 +33,7 @@ export function TripTimeline({ stops, startDate, country = '', selectedIndex, on
   return (
     <div>
       <p className="mb-3 text-sm text-[var(--color-mute)]">
-        {duration + 1} giorni Â· {formatNights(nights)}. Il giorno di arrivo Ã¨ incluso nellâ€™ultima tappa.
+        {duration + 1} giorni · {formatNights(nights)}. Il giorno di arrivo è incluso nell'ultima tappa.
       </p>
       <ol className="space-y-2" aria-label="Timeline verticale dei giorni della vacanza">
         {sections.map((stop) => (
@@ -57,23 +57,23 @@ export function TripTimeline({ stops, startDate, country = '', selectedIndex, on
               {!stop.days ? <span className="py-4 pr-4 text-right text-xs text-[var(--color-mute)]">Transito</span> : null}
             </div>
               <div
-                title={`${stop.name}: ${formatNights(stop.stopNights)}${startDate ? ` Â· ${formatDate(addDays(startDate, stop.start))} â†’ ${formatDate(addDays(startDate, stop.start + stop.stopNights))}` : ''}`}
+                title={`${stop.name}: ${formatNights(stop.stopNights)}${startDate ? ` · ${formatDate(addDays(startDate, stop.start))} → ${formatDate(addDays(startDate, stop.start + stop.stopNights))}` : ''}`}
                 className={`relative flex min-h-28 min-w-0 flex-col justify-center rounded-xl p-3 text-left text-white phone:!hidden ${!stop.last && stop.name && stops[stop.index + 1]?.name ? 'pb-14' : ''}`}
                 style={{ background: colors[stop.index % colors.length], outline: selectedIndex === stop.index ? '2px solid var(--color-ink)' : undefined, outlineOffset: 1 }}
               >
                 <button type="button" className="w-full min-w-0 py-2 text-left" onClick={() => onSelect?.(stop.index)} aria-pressed={onSelect ? selectedIndex === stop.index : undefined}>
                   <span className="block text-sm font-bold">{stop.index + 1}. {stop.name || 'Tappa'}</span>
                   <span className="text-xs opacity-90">{formatNights(stop.stopNights)}</span>
-                  {stop.last ? <span className="mt-1 block text-xs opacity-90">Giorno {duration + 1}: arrivo incluso</span> : null}
+                {stop.last ? <span className="mt-1 block text-xs opacity-90">Giorno {duration + 1}: arrivo incluso</span> : null}
                 </button>
                 {onNightsChange ? <NightsControls name={stop.name} nights={stop.stopNights} busy={busy} onChange={(nights) => onNightsChange(stop.index, nights)} /> : null}
                 {onMove ? <div className="mt-2 flex flex-wrap gap-2">
-                  <button type="button" className="rounded-lg border border-white/50 px-3 py-2 text-xs font-bold disabled:opacity-40" disabled={busy || stop.index === 0} aria-label={`Sposta prima ${stop.name}`} onClick={() => onMove(stop.index, -1)}>â†‘ Prima</button>
-                  <button type="button" className="rounded-lg border border-white/50 px-3 py-2 text-xs font-bold disabled:opacity-40" disabled={busy || stop.last} aria-label={`Sposta dopo ${stop.name}`} onClick={() => onMove(stop.index, 1)}>â†“ Dopo</button>
+                  <button type="button" className="rounded-lg border border-white/50 px-3 py-2 text-xs font-bold disabled:opacity-40" disabled={busy || stop.index === 0} aria-label={`Sposta prima ${stop.name}`} onClick={() => onMove(stop.index, -1)}>↑ Prima</button>
+                  <button type="button" className="rounded-lg border border-white/50 px-3 py-2 text-xs font-bold disabled:opacity-40" disabled={busy || stop.last} aria-label={`Sposta dopo ${stop.name}`} onClick={() => onMove(stop.index, 1)}>↓ Dopo</button>
                 </div> : null}
                 {!stop.last ? <p className="mt-2 text-xs">Distanza verso {stops[stop.index + 1].name || 'la tappa successiva'}: {stops[stop.index + 1].transfer_distance_km != null ? `${stops[stop.index + 1].transfer_distance_km} km` : 'da inserire in Spostamenti'}</p> : null}
                 {stops[stop.index + 1]?.name && stop.name ? (
-                  <a className="absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-lg border border-white/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" href={rome2rioUrl(stop, stops[stop.index + 1], country)} target="_blank" rel="noopener noreferrer" title={`Calcola lo spostamento verso ${stops[stop.index + 1].name} su Rome2Rio`} aria-label={`Calcola lo spostamento verso ${stops[stop.index + 1].name} su Rome2Rio (apre una nuova scheda)`}>
+                  <a className="absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-lg border border-white/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" href={rome2rioUrl(stop, stops[stop.index + 1], country)} target="rome2rio" rel="noopener noreferrer" title={`Calcola lo spostamento verso ${stops[stop.index + 1].name} su Rome2Rio`} aria-label={`Calcola lo spostamento verso ${stops[stop.index + 1].name} su Rome2Rio (apre la finestra Rome2Rio)`}>
                     <Car className="h-5 w-5" aria-hidden />
                   </a>
                 ) : null}
@@ -103,27 +103,27 @@ function MobileTimelineStop({ name, index, start, startDate, nights, days, last,
     <div className="min-w-0 rounded-2xl p-3 text-white" style={{ background: color, outline: selected ? '2px solid var(--color-ink)' : undefined, outlineOffset: 1 }}>
       <button type="button" className="block w-full text-left" onClick={onSelect}>
         <span className="block text-base font-bold">{index + 1}. {name}</span>
-        <span className="mt-1 block text-xs opacity-90">{shortDate(start)}â€“{shortDate(start + nights)}</span>
+        <span className="mt-1 block text-xs opacity-90">{shortDate(start)}–{shortDate(start + nights)}</span>
       </button>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {onChange ? <button type="button" className="grid h-9 w-8 place-items-center rounded-lg bg-white/15 text-lg disabled:opacity-40" disabled={busy || nights <= 1} aria-label={`Riduci notti di ${name}`} onClick={() => onChange(Math.max(1, nights - 1))}>âˆ’</button> : null}
+          {onChange ? <button type="button" className="grid h-9 w-8 place-items-center rounded-lg bg-white/15 text-lg disabled:opacity-40" disabled={busy || nights <= 1} aria-label={`Riduci notti di ${name}`} onClick={() => onChange(Math.max(1, nights - 1))}>−</button> : null}
           <span className="text-xs font-bold">{formatNights(nights)}</span>
           {onChange ? <button type="button" className="grid h-9 w-8 place-items-center rounded-lg bg-white/15 text-lg disabled:opacity-40" disabled={busy || nights >= 30} aria-label={`Aumenta notti di ${name}`} onClick={() => onChange(Math.max(1, nights + 1))}>+</button> : null}
         </div>
         {onMove ? <div className="flex gap-1">
-          <button type="button" className="h-9 w-8 rounded-lg bg-white/15 disabled:opacity-40" disabled={busy || index === 0} aria-label={`Sposta prima ${name}`} title="Sposta prima" onClick={() => onMove(-1)}>â†‘</button>
-          <button type="button" className="h-9 w-8 rounded-lg bg-white/15 disabled:opacity-40" disabled={busy || last} aria-label={`Sposta dopo ${name}`} title="Sposta dopo" onClick={() => onMove(1)}>â†“</button>
+          <button type="button" className="h-9 w-8 rounded-lg bg-white/15 disabled:opacity-40" disabled={busy || index === 0} aria-label={`Sposta prima ${name}`} title="Sposta prima" onClick={() => onMove(-1)}>↑</button>
+          <button type="button" className="h-9 w-8 rounded-lg bg-white/15 disabled:opacity-40" disabled={busy || last} aria-label={`Sposta dopo ${name}`} title="Sposta dopo" onClick={() => onMove(1)}>↓</button>
         </div> : null}
       </div>
       {expanded ? <ul className="mt-2 space-y-1 border-l border-white/40 pl-2 text-xs">
-        {Array.from({ length: days }, (_, offset) => <li key={offset}>{shortDate(start + offset)} Â· Giorno {start + offset + 1}{last && offset === days - 1 ? ' Â· arrivo' : ''}</li>)}
+        {Array.from({ length: days }, (_, offset) => <li key={offset}>{shortDate(start + offset)} · Giorno {start + offset + 1}{last && offset === days - 1 ? ' · arrivo' : ''}</li>)}
         {!days ? <li>Transito senza pernottamento</li> : null}
       </ul> : null}
       <div className="mt-2 flex items-center gap-2">
-        {url ? <a href={url} target="_blank" rel="noopener noreferrer" className="grid h-9 w-8 shrink-0 place-items-center rounded-lg hover:bg-white/15" title={`Rome2Rio verso ${nextName}`} aria-label={`Rome2Rio verso ${nextName} (apre una nuova scheda)`}><Car className="h-5 w-5" aria-hidden /></a> : null}
-        <span className="min-w-0 flex-1 text-xs">{last ? `${shortDate(start + nights)} Â· arrivo incluso` : distance != null ? `${distance} km alla prossima tappa` : 'Distanza da inserire'}</span>
-        <button type="button" className="min-h-9 shrink-0 text-xs" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Riduci â–´' : 'Giorni â–¾'}</button>
+        {url ? <a href={url} target="rome2rio" rel="noopener noreferrer" className="grid h-9 w-8 shrink-0 place-items-center rounded-lg hover:bg-white/15" title={`Rome2Rio verso ${nextName}`} aria-label={`Rome2Rio verso ${nextName} (apre la finestra Rome2Rio)`}><Car className="h-5 w-5" aria-hidden /></a> : null}
+        <span className="min-w-0 flex-1 text-xs">{last ? `${shortDate(start + nights)} · arrivo incluso` : distance != null ? `${distance} km alla prossima tappa` : 'Distanza da inserire'}</span>
+        <button type="button" className="min-h-9 shrink-0 text-xs" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Riduci ▴' : 'Giorni ▾'}</button>
       </div>
     </div>
   </div>
@@ -152,7 +152,7 @@ function TimelineTransfers({ events, from, to, start, startDate, busy, onChange 
       if (event.kind === 'day') offset++
       const date = addDays(startDate, day)
       const Icon = event.kind === 'day' ? Truck : Moon
-      return <div key={event.id} className="flex items-start gap-3 rounded-xl border border-[var(--color-line)] bg-[var(--color-paper)] p-3">
+      return <div key={event.id} className="mx-auto flex w-fit max-w-full items-start gap-2 rounded-xl border border-[var(--color-line)] bg-[var(--color-paper)] px-3 py-2">
         <Icon className="mt-1 h-6 w-6 shrink-0 text-[var(--color-forest)]" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold">{event.kind === 'day' ? 'Giorno di trasferimento' : 'Trasferta notturna'}</p>
@@ -185,7 +185,7 @@ function TimelineTransfers({ events, from, to, start, startDate, busy, onChange 
 
 function NightsControls({ name, nights, busy, onChange }: { name: string; nights: number; busy: boolean; onChange: (nights: number) => void }) {
   return <div className="flex justify-start gap-1 pb-1">
-    <button type="button" className="grid h-9 w-7 shrink-0 place-items-center rounded-lg border border-current text-lg font-bold disabled:opacity-40" aria-label={`Riduci notti di ${name}`} disabled={busy || nights <= 1} onClick={() => onChange(Math.max(1, nights - 1))}>âˆ’</button>
+    <button type="button" className="grid h-9 w-7 shrink-0 place-items-center rounded-lg border border-current text-lg font-bold disabled:opacity-40" aria-label={`Riduci notti di ${name}`} disabled={busy || nights <= 1} onClick={() => onChange(Math.max(1, nights - 1))}>−</button>
     <button type="button" className="grid h-9 w-7 shrink-0 place-items-center rounded-lg border border-current text-lg font-bold disabled:opacity-40" aria-label={`Aumenta notti di ${name}`} disabled={busy || nights >= 30} onClick={() => onChange(Math.max(1, nights + 1))}>+</button>
   </div>
 }
