@@ -1,6 +1,6 @@
 import type { StopInput, TimelineTransfer } from '../../shared/types'
 import { Car, Moon, Truck } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { addDays, totalNights, elapsedDays, transferDays } from '../../shared/schedule'
 import { rome2rioUrl } from '../../shared/transfers'
 import { formatDate, formatNights } from '../lib/format'
@@ -39,7 +39,7 @@ export function TripTimeline({ stops, startDate, country = '', selectedIndex, on
         {sections.map((stop) => (
           <li key={stop.id || stop.key || stop.index} className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 sm:grid-cols-[6rem_minmax(0,1fr)] phone:!block">
             <div className="col-span-2">
-              <TimelineTransfers events={stop.timeline_transfers || []} from={stops[stop.index - 1]?.name || 'Partenza'} to={stop.name || 'Tappa'} start={stop.transferStart} startDate={startDate} busy={busy} onChange={onTransfersChange ? (events) => onTransfersChange(stop.index, events) : undefined} />
+              <TimelineTransfers events={stop.timeline_transfers || []} from={stops[stop.index - 1]?.name || 'Partenza'} to={stop.name || 'Tappa'} fromColor={colors[Math.max(0, stop.index - 1) % colors.length]} toColor={colors[stop.index % colors.length]} start={stop.transferStart} startDate={startDate} busy={busy} onChange={onTransfersChange ? (events) => onTransfersChange(stop.index, events) : undefined} />
             </div>
             <MobileTimelineStop name={stop.name || 'Tappa'} index={stop.index} start={stop.start} startDate={startDate} nights={stop.stopNights} days={stop.days} last={stop.last} nextName={stops[stop.index + 1]?.name} distance={stops[stop.index + 1]?.transfer_distance_km} url={!stop.last && stop.name && stops[stop.index + 1]?.name ? rome2rioUrl(stop, stops[stop.index + 1], country) : undefined} selected={selectedIndex === stop.index} busy={busy} onSelect={onSelect ? () => onSelect(stop.index) : undefined} onChange={onNightsChange ? (nights) => onNightsChange(stop.index, nights) : undefined} onMove={onMove ? (direction) => onMove(stop.index, direction) : undefined} />
             <div className="flex flex-col border-r-2 border-[var(--color-forest)] phone:!hidden">
@@ -129,8 +129,8 @@ function MobileTimelineStop({ name, index, start, startDate, nights, days, last,
   </div>
 }
 
-function TimelineTransfers({ events, from, to, start, startDate, busy, onChange }: {
-  events: TimelineTransfer[]; from: string; to: string; start: number; startDate: string | null; busy: boolean
+function TimelineTransfers({ events, from, to, fromColor, toColor, start, startDate, busy, onChange }: {
+  events: TimelineTransfer[]; from: string; to: string; fromColor: string; toColor: string; start: number; startDate: string | null; busy: boolean
   onChange?: (events: TimelineTransfer[]) => void | Promise<void>
 }) {
   const [draft, setDraft] = useState<TimelineTransfer | null>(null)
@@ -152,22 +152,26 @@ function TimelineTransfers({ events, from, to, start, startDate, busy, onChange 
       if (event.kind === 'day') offset++
       const date = addDays(startDate, day)
       const Icon = event.kind === 'day' ? Truck : Moon
-      return <div key={event.id} className="mx-auto flex w-fit max-w-full items-start gap-2 rounded-xl border border-[var(--color-line)] bg-[var(--color-paper)] px-3 py-2">
-        <Icon className="mt-1 h-6 w-6 shrink-0 text-[var(--color-forest)]" aria-hidden />
-        <div className="min-w-0 flex-1">
+      const transferStyle = { '--transfer-from': fromColor, '--transfer-to': toColor } as CSSProperties
+      return <div key={event.id} className={event.kind === 'day' ? 'timeline-transfer-day mx-auto w-fit max-w-full phone-port:!grid phone-port:!w-full phone-port:grid-cols-[2rem_minmax(0,1fr)] phone-port:gap-2' : 'mx-auto w-fit max-w-full phone-port:!ml-auto phone-port:!mr-0 phone-port:!w-[72%]'} style={transferStyle}>
+        {event.kind === 'day' ? <div className="timeline-transfer-rail hidden phone-port:!block" aria-hidden /> : null}
+        <div className={`flex items-start gap-2 rounded-xl border border-[var(--color-line)] px-3 py-2 ${event.kind === 'day' ? 'timeline-transfer-day-badge' : 'bg-[var(--color-paper)]'}`}>
+          <Icon className={`mt-1 h-6 w-6 shrink-0 ${event.kind === 'day' ? 'text-white' : 'text-[var(--color-forest)]'}`} aria-hidden />
+          <div className="min-w-0 flex-1">
           <p className="text-sm font-bold">{event.kind === 'day' ? 'Giorno di trasferimento' : 'Trasferta notturna'}</p>
-          <p className="text-xs text-[var(--color-mute)]">{from} → {to} · {event.kind === 'day' ? `Giorno ${day + 1}` : 'Senza giorni aggiuntivi'}{date ? ` · ${formatDate(date)}` : ''}</p>
+          <p className={`text-xs ${event.kind === 'day' ? 'text-white/90' : 'text-[var(--color-mute)]'}`}>{from} → {to} · {event.kind === 'day' ? `Giorno ${day + 1}` : 'Senza giorni aggiuntivi'}{date ? ` · ${formatDate(date)}` : ''}</p>
           {event.notes ? <p className="mt-2 whitespace-pre-wrap break-words text-sm">{event.notes}</p> : null}
           {onChange ? <div className="mt-2 flex gap-3 text-xs">
             <button type="button" className="min-h-9 underline" disabled={disabled} onClick={() => { setDraft({ ...event }); setError('') }}>Modifica note</button>
             <button type="button" className="min-h-9 text-red-700 underline" disabled={disabled} onClick={() => void save(events.filter((item) => item.id !== event.id))}>Rimuovi</button>
           </div> : null}
+          </div>
         </div>
       </div>
     })}
-    {onChange && !draft && events.length < 30 ? <div className="flex flex-wrap gap-2 py-1">
-      <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs" disabled={disabled} onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'day', notes: '' })}><Truck className="h-4 w-4" aria-hidden />+ Giorno di trasferimento</button>
-      <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs" disabled={disabled} onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'night', notes: '' })}><Moon className="h-4 w-4" aria-hidden />+ Trasferta notturna</button>
+    {onChange && !draft && events.length < 30 ? <div className="flex flex-wrap gap-2 py-1 phone-port:!justify-end">
+      <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs phone-port:!h-10 phone-port:!w-10 phone-port:!justify-center phone-port:!p-0" disabled={disabled} title="Aggiungi giorno di trasferimento" aria-label="Aggiungi giorno di trasferimento" onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'day', notes: '' })}><Truck className="h-4 w-4" aria-hidden /><span className="phone-port:!hidden">+ Giorno di trasferimento</span></button>
+      {!events.some((event) => event.kind === 'night') ? <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs phone-port:!h-10 phone-port:!w-10 phone-port:!justify-center phone-port:!p-0" disabled={disabled} title="Aggiungi trasferta notturna" aria-label="Aggiungi trasferta notturna" onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'night', notes: '' })}><Moon className="h-4 w-4" aria-hidden /><span className="phone-port:!hidden">+ Trasferta notturna</span></button> : null}
     </div> : null}
     {draft ? <div className="rounded-xl border border-[var(--color-line)] p-3">
       <p className="text-sm font-bold">{draft.kind === 'day' ? 'Giorno di trasferimento (+1 giorno)' : 'Trasferta notturna (nessun giorno aggiuntivo)'} · {from} → {to}</p>

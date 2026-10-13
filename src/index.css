@@ -212,3 +212,28 @@ body {
   font-family: var(--font-sans);
   background: #e9eee8;
 }
+
+@media (orientation: portrait) and (max-width: 767px) {
+  .timeline-transfer-day-badge {
+    color: white;
+    background: linear-gradient(135deg, var(--transfer-from), var(--transfer-to));
+  }
+
+  .timeline-transfer-rail {
+    position: relative;
+    min-height: 100%;
+    border-right: 2px solid var(--color-line);
+  }
+
+  .timeline-transfer-rail::after {
+    position: absolute;
+    top: 50%;
+    right: -6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--transfer-from), var(--transfer-to));
+    content: '';
+    transform: translateY(-50%);
+  }
+}
