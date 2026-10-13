@@ -118,6 +118,7 @@ export function EditItinerary() {
           transfer_minutes: s.transfer_minutes,
           transfer_distance_km: s.transfer_distance_km,
           transfer_mode: s.transfer_mode,
+          timeline_transfers: s.timeline_transfers,
           image_url: s.image_url,
           video_url: s.video_url,
         })),
@@ -182,6 +183,7 @@ export function EditItinerary() {
         transfer_minutes: s.transfer_minutes,
         transfer_distance_km: s.transfer_distance_km,
         transfer_mode: s.transfer_mode,
+          timeline_transfers: s.timeline_transfers,
         image_url: s.image_url,
         video_url: s.video_url,
       })),
@@ -336,7 +338,7 @@ export function EditItinerary() {
           <Field label="Data partenza" value={startDate} onChange={setStartDate} type="date" />
           <label className="block text-sm font-semibold">Data di arrivo (automatica)<input className="field mt-1" type="date" value={endDate} readOnly /></label>
         </div>
-        <TripTimeline stops={stops} startDate={startDate || null} country={country} onMove={move} onNightsChange={(index, nights) => updateStop(stops[index].key, { nights })} />
+        <TripTimeline stops={stops} startDate={startDate || null} country={country} busy={busy} onTransfersChange={(index, timeline_transfers) => updateStop(stops[index].key, { timeline_transfers })} onMove={move} onNightsChange={(index, nights) => updateStop(stops[index].key, { nights })} />
       </section>
       </div>
 

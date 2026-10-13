@@ -42,9 +42,24 @@ function optUrl(value: unknown): string | null {
   return s
 }
 
+export function validateTimelineTransfers(value: unknown): NonNullable<StopInput['timeline_transfers']> | string {
+  if (value === undefined) return []
+  if (!Array.isArray(value) || value.length > 30) return 'Massimo 30 elementi di trasferimento per tappa'
+  const result: NonNullable<StopInput['timeline_transfers']> = []
+  for (const item of value) {
+    if (!item || typeof item !== 'object' || (item.kind !== 'day' && item.kind !== 'night')) return 'Tipo di trasferimento non valido'
+    if (typeof item.id !== 'string' || !item.id || item.id.length > 80 || result.some((event) => event.id === item.id)) return 'Identificativo di trasferimento non valido'
+    if (typeof item.notes !== 'string' || item.notes.length > 2000) return 'Le note devono contenere al massimo 2000 caratteri'
+    result.push({ id: item.id, kind: item.kind, notes: item.notes })
+  }
+  return result
+}
+
 export function validateStop(body: unknown): StopInput | string {
   if (!body || typeof body !== 'object') return 'Tappa non valida'
   const rec = body as Record<string, unknown>
+  const timeline_transfers = validateTimelineTransfers(rec.timeline_transfers)
+  if (typeof timeline_transfers === 'string') return timeline_transfers
   const name = asString(rec.name, 120)
   if (!name) return 'Ogni tappa deve avere un nome'
   const nights = rec.nights == null || rec.nights === '' ? 0 : clampInt(rec.nights, 0, 30)
@@ -75,6 +90,7 @@ export function validateStop(body: unknown): StopInput | string {
   return {
     id: rec.id ? asString(rec.id, 80) : undefined,
     name,
+    timeline_transfers,
     country: asString(rec.country, 80),
     latitude,
     longitude,

@@ -4,11 +4,30 @@ import { enforceRateLimit } from '../lib/rateLimit'
 import { clientIp, error, json, nowIso } from '../lib/util'
 import { arrivalDate } from '../../shared/schedule'
 import { reconcileTransfers } from '../../shared/transfers'
-import { validateFavorite, validateStop } from '../lib/validate'
+import { validateFavorite, validateStop, validateTimelineTransfers } from '../lib/validate'
 
 type AppEnv = { Bindings: Env }
 
 export const stops = new Hono<AppEnv>()
+
+stops.put('/:id/timeline-transfers', async (c) => {
+  if (!(await enforceRateLimit(c.env.DB, clientIp(c.req.raw), 'write'))) return error('Troppe modifiche. Riprova tra un minuto.', 429)
+  const current = await getStop(c.env.DB, c.req.param('id'))
+  if (!current) return error('Tappa non trovata', 404)
+  const body = await c.req.json() as Record<string, unknown>
+  const events = validateTimelineTransfers(body.timeline_transfers)
+  if (typeof events === 'string') return error(events)
+  const itinerary = await getItinerary(c.env.DB, current.itinerary_id)
+  if (!itinerary) return error('Itinerario non trovato', 404)
+  await saveRevision(c.env.DB, itinerary.id)
+  const next = itinerary.stops.map((stop) => stop.id === current.id ? { ...stop, timeline_transfers: events } : stop)
+  const ts = nowIso()
+  await c.env.DB.batch([
+    c.env.DB.prepare('UPDATE stops SET timeline_transfers = ?, updated_at = ? WHERE id = ?').bind(JSON.stringify(events), ts, current.id),
+    c.env.DB.prepare('UPDATE itineraries SET end_date = ?, updated_at = ? WHERE id = ?').bind(arrivalDate(itinerary.start_date, next), ts, itinerary.id),
+  ])
+  return json(await getItinerary(c.env.DB, itinerary.id))
+})
 
 stops.put('/:id/move', async (c) => {
   if (!(await enforceRateLimit(c.env.DB, clientIp(c.req.raw), 'write'))) return error('Troppe modifiche. Riprova tra un minuto.', 429)
@@ -28,8 +47,8 @@ stops.put('/:id/move', async (c) => {
   await saveRevision(c.env.DB, itinerary.id)
   const ts = nowIso()
   await c.env.DB.batch([
-    ...next.map((stop, position) => c.env.DB.prepare('UPDATE stops SET position = ?, transfer_minutes = ?, transfer_distance_km = ?, transfer_mode = ?, updated_at = ? WHERE id = ? AND itinerary_id = ?')
-      .bind(position + 1, stop.transfer_minutes, stop.transfer_distance_km, stop.transfer_mode, ts, stop.id, itinerary.id)),
+    ...next.map((stop, position) => c.env.DB.prepare('UPDATE stops SET position = ?, transfer_minutes = ?, transfer_distance_km = ?, transfer_mode = ?, timeline_transfers = ?, updated_at = ? WHERE id = ? AND itinerary_id = ?')
+      .bind(position + 1, stop.transfer_minutes, stop.transfer_distance_km, stop.transfer_mode, JSON.stringify(stop.timeline_transfers || []), ts, stop.id, itinerary.id)),
     c.env.DB.prepare('UPDATE itineraries SET end_date = ?, updated_at = ? WHERE id = ?').bind(arrivalDate(itinerary.start_date, next), ts, itinerary.id),
   ])
   return json(await getItinerary(c.env.DB, itinerary.id))

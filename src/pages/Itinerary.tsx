@@ -129,6 +129,15 @@ export function Itinerary() {
     } finally { setNightsBusy(false) }
   }
 
+  async function changeTimelineTransfers(index: number, events: import('../../shared/types').TimelineTransfer[]) {
+    if (!data || nightsBusy || dateBusy) return
+    setNightsBusy(true)
+    setNightsError('')
+    try { setData(await api.updateTimelineTransfers(data.stops[index].id, events)) }
+    catch (err) { setNightsError(err instanceof Error ? err.message : 'Salvataggio del trasferimento non riuscito') }
+    finally { setNightsBusy(false) }
+  }
+
   async function moveTimelineStop(index: number, direction: -1 | 1) {
     if (!data || nightsBusy || dateBusy) return
     setNightsBusy(true)
@@ -273,7 +282,7 @@ export function Itinerary() {
         {dateError ? <p role="alert" className="text-sm text-red-700">{dateError}</p> : null}
         {dateSaved ? <p role="status" className="text-sm text-[var(--color-forest)]">Date salvate.</p> : null}
         {nightsError ? <p role="alert" className="text-sm text-red-700">{nightsError}</p> : null}
-        <TripTimeline stops={data.stops} startDate={departure || null} country={data.country} selectedIndex={stopIndex} onSelect={(index) => { setStopIndex(index); setActiveTab('stops') }} busy={nightsBusy || dateBusy} onMove={(index, direction) => void moveTimelineStop(index, direction)} onNightsChange={(index, nights) => void changeNights(index, nights)} />
+        <TripTimeline stops={data.stops} startDate={departure || null} country={data.country} selectedIndex={stopIndex} onSelect={(index) => { setStopIndex(index); setActiveTab('stops') }} busy={nightsBusy || dateBusy} onTransfersChange={changeTimelineTransfers} onMove={(index, direction) => void moveTimelineStop(index, direction)} onNightsChange={(index, nights) => void changeNights(index, nights)} />
       </section>
       </div>
 

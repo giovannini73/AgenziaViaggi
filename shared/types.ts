@@ -13,7 +13,14 @@ export const TRAVEL_TAGS = [
 
 export type TravelTag = (typeof TRAVEL_TAGS)[number]
 
+export type TimelineTransfer = {
+  id: string
+  kind: 'day' | 'night'
+  notes: string
+}
+
 export type Stop = {
+  timeline_transfers?: TimelineTransfer[]
   id: string
   itinerary_id: string
   position: number
@@ -136,6 +143,7 @@ export type Revision = {
 }
 
 export type StopInput = {
+  timeline_transfers?: TimelineTransfer[]
   id?: string
   name: string
   country?: string

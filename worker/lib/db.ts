@@ -21,12 +21,14 @@ type ItineraryRow = {
   created_at: string
   updated_at: string
   stop_count?: number
+  transfer_days?: number
   duration_nights?: number
   avg_rating?: number | null
   rating_count?: number
 }
 
 type StopRow = {
+  timeline_transfers: string
   id: string
   itinerary_id: string
   position: number
@@ -65,13 +67,13 @@ function mapList(row: ItineraryRow): ItineraryListItem {
     start_city: row.start_city,
     end_city: row.end_city,
     start_date: row.start_date,
-    end_date: Number(row.stop_count || 0) > 0 ? addDays(row.start_date, nights) : null,
+    end_date: Number(row.stop_count || 0) > 0 ? addDays(row.start_date, nights + Number(row.transfer_days || 0)) : null,
     travel_style: row.travel_style,
     cover_image: row.cover_image,
     tags: parseTags(row.tags),
     recommended_period: row.recommended_period,
     duration_nights: nights,
-    duration_days: Number(row.stop_count || 0) > 0 ? nights + 1 : 0,
+    duration_days: Number(row.stop_count || 0) > 0 ? nights + Number(row.transfer_days || 0) + 1 : 0,
     stop_count: Number(row.stop_count || 0),
     avg_rating: row.avg_rating == null ? null : Number(row.avg_rating),
     rating_count: Number(row.rating_count || 0),
@@ -85,6 +87,7 @@ function mapStop(row: StopRow): Stop {
   return {
     id: row.id,
     itinerary_id: row.itinerary_id,
+    timeline_transfers: JSON.parse(row.timeline_transfers || '[]'),
     position: row.position,
     name: row.name,
     country: row.country,
@@ -117,6 +120,7 @@ const LIST_SELECT = `
   SELECT i.*,
     (SELECT COUNT(*) FROM stops s WHERE s.itinerary_id = i.id) AS stop_count,
     (SELECT COALESCE(SUM(nights), 0) FROM stops s WHERE s.itinerary_id = i.id) AS duration_nights,
+    (SELECT COUNT(*) FROM stops s, json_each(s.timeline_transfers) e WHERE s.itinerary_id = i.id AND json_extract(e.value, '$.kind') = 'day') AS transfer_days,
     (SELECT AVG(rating) FROM itinerary_ratings r WHERE r.itinerary_id = i.id AND r.user_id IN ('sabrina', 'claudio')) AS avg_rating,
     (SELECT COUNT(*) FROM itinerary_ratings r WHERE r.itinerary_id = i.id AND r.user_id IN ('sabrina', 'claudio')) AS rating_count
   FROM itineraries i
@@ -416,8 +420,8 @@ export async function insertStop(db: D1Database, itineraryId: string, position: 
   const ts = nowIso()
   await db
     .prepare(
-      `INSERT INTO stops (id, itinerary_id, position, name, country, latitude, longitude, arrival_day, nights, description, why_visit, attractions, food_notes, markets, where_to_eat, where_to_stay, beaches, excursions, transfer_minutes, transfer_distance_km, transfer_mode, image_url, video_url, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO stops (id, itinerary_id, position, name, country, latitude, longitude, arrival_day, nights, description, why_visit, attractions, food_notes, markets, where_to_eat, where_to_stay, beaches, excursions, transfer_minutes, transfer_distance_km, transfer_mode, image_url, video_url, timeline_transfers, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -443,6 +447,7 @@ export async function insertStop(db: D1Database, itineraryId: string, position: 
       s.transfer_mode || '',
       s.image_url ?? null,
       s.video_url ?? null,
+      JSON.stringify(s.timeline_transfers || []),
       ts,
       ts,
     )
@@ -456,7 +461,7 @@ export async function updateStopRow(db: D1Database, id: string, s: StopInput, po
   const ts = nowIso()
   await db
     .prepare(
-      `UPDATE stops SET position = ?, name = ?, country = ?, latitude = ?, longitude = ?, arrival_day = ?, nights = ?, description = ?, why_visit = ?, attractions = ?, food_notes = ?, markets = ?, where_to_eat = ?, where_to_stay = ?, beaches = ?, excursions = ?, transfer_minutes = ?, transfer_distance_km = ?, transfer_mode = ?, image_url = ?, video_url = ?, updated_at = ?
+      `UPDATE stops SET position = ?, name = ?, country = ?, latitude = ?, longitude = ?, arrival_day = ?, nights = ?, description = ?, why_visit = ?, attractions = ?, food_notes = ?, markets = ?, where_to_eat = ?, where_to_stay = ?, beaches = ?, excursions = ?, transfer_minutes = ?, transfer_distance_km = ?, transfer_mode = ?, image_url = ?, video_url = ?, timeline_transfers = ?, updated_at = ?
        WHERE id = ?`,
     )
     .bind(
@@ -481,6 +486,7 @@ export async function updateStopRow(db: D1Database, id: string, s: StopInput, po
       s.transfer_mode ?? current.transfer_mode,
       s.image_url !== undefined ? s.image_url ?? null : current.image_url,
       s.video_url !== undefined ? s.video_url ?? null : current.video_url,
+      JSON.stringify(s.timeline_transfers || []),
       ts,
       id,
     )

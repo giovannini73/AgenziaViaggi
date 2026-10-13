@@ -10,6 +10,6 @@ export function reconcileTransfers<T extends StopInput & { key: string }>(previo
     const oldIndex = previous.findIndex((item) => item.key === stop.key)
     const oldOrigin = oldIndex > 0 ? previous[oldIndex - 1].key : null
     const origin = index > 0 ? next[index - 1].key : null
-    return oldOrigin === origin ? stop : { ...stop, transfer_minutes: null, transfer_distance_km: null, transfer_mode: '' }
+    return oldOrigin === origin ? stop : { ...stop, transfer_minutes: null, transfer_distance_km: null, transfer_mode: '', timeline_transfers: [] }
   })
 }

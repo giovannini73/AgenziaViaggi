@@ -36,6 +36,8 @@ export const api = {
     request<ItineraryDetail>(`/api/itineraries/${id}`, { method: 'PUT', body: JSON.stringify({ start_date }) }),
   updateNights: (id: string, nights: number) =>
     request<ItineraryDetail>(`/api/stops/${id}/nights`, { method: 'PUT', body: JSON.stringify({ nights }) }),
+  updateTimelineTransfers: (id: string, timeline_transfers: import('../../shared/types').TimelineTransfer[]) =>
+    request<ItineraryDetail>(`/api/stops/${id}/timeline-transfers`, { method: 'PUT', body: JSON.stringify({ timeline_transfers }) }),
   moveStop: (id: string, direction: -1 | 1) =>
     request<ItineraryDetail>(`/api/stops/${id}/move`, { method: 'PUT', body: JSON.stringify({ direction }) }),
   updateTransfer: (id: string, body: { transfer_minutes: number | null; transfer_distance_km: number | null; transfer_mode: string }) =>
