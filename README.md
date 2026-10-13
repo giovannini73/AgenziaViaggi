@@ -39,4 +39,4 @@ Per le password e la chat: copia `.dev.vars.example` in `.dev.vars` e inserisci 
 
 ## Versione
 
-1.0.52
+1.0.53

@@ -170,8 +170,9 @@ function TimelineTransfers({ events, from, to, fromColor, toColor, start, startD
             <span className="text-sm font-bold">Trasferta notturna</span>
             {nightExpanded ? <ChevronUp className="h-4 w-4 shrink-0" aria-hidden /> : <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />}
           </button> : <p className="text-sm font-bold">Giorno di trasferimento</p>}
-          <p className={`text-xs ${event.kind === 'day' ? 'text-white/90' : 'text-[var(--color-mute)]'}`}>{from} → {to} · {event.kind === 'day' ? `Giorno ${day + 1}` : 'Senza giorni aggiuntivi'}{date ? ` · ${formatDate(date)}` : ''}</p>
+          {event.kind === 'day' ? <p className="text-xs text-white/90">{from} → {to} · Giorno {day + 1}{date ? ` · ${formatDate(date)}` : ''}</p> : null}
           <div id={event.kind === 'night' ? detailsId : undefined} className={event.kind === 'night' ? (nightExpanded ? 'phone-port:block' : 'phone-port:hidden') : undefined}>
+            {event.kind === 'night' ? <p className="text-xs text-[var(--color-mute)]">{from} → {to} · Senza giorni aggiuntivi{date ? ` · ${formatDate(date)}` : ''}</p> : null}
             {event.notes ? <p className="mt-2 whitespace-pre-wrap break-words text-sm">{event.notes}</p> : null}
             {onChange ? <div className="mt-2 flex gap-3 text-xs">
               <button type="button" className="min-h-9 underline" disabled={disabled} onClick={() => { setDraft({ ...event }); setError('') }}>Modifica note</button>
