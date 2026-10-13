@@ -1,5 +1,5 @@
 import type { StopInput, TimelineTransfer } from '../../shared/types'
-import { Car, Moon, Truck } from 'lucide-react'
+import { Car, ChevronDown, ChevronUp, Moon, Truck } from 'lucide-react'
 import { useState, type CSSProperties } from 'react'
 import { addDays, totalNights, elapsedDays, transferDays } from '../../shared/schedule'
 import { rome2rioUrl } from '../../shared/transfers'
@@ -136,6 +136,7 @@ function TimelineTransfers({ events, from, to, fromColor, toColor, start, startD
   const [draft, setDraft] = useState<TimelineTransfer | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [expandedNightTransfers, setExpandedNightTransfers] = useState<Set<string>>(new Set())
   let offset = start
   async function save(next: TimelineTransfer[]) {
     if (!onChange || busy || saving) return
@@ -152,24 +153,36 @@ function TimelineTransfers({ events, from, to, fromColor, toColor, start, startD
       if (event.kind === 'day') offset++
       const date = addDays(startDate, day)
       const Icon = event.kind === 'day' ? Truck : Moon
+      const nightExpanded = event.kind === 'night' && expandedNightTransfers.has(event.id)
+      const detailsId = `timeline-transfer-details-${event.id}`
       const transferStyle = { '--transfer-from': fromColor, '--transfer-to': toColor } as CSSProperties
       return <div key={event.id} className={event.kind === 'day' ? 'timeline-transfer-day mx-auto w-fit max-w-full phone-port:!grid phone-port:!w-full phone-port:grid-cols-[2rem_minmax(0,1fr)] phone-port:gap-2' : 'mx-auto w-fit max-w-full phone-port:!ml-auto phone-port:!mr-0 phone-port:!w-[72%]'} style={transferStyle}>
         {event.kind === 'day' ? <div className="timeline-transfer-rail hidden phone-port:!block" aria-hidden /> : null}
         <div className={`flex items-start gap-2 rounded-xl border border-[var(--color-line)] px-3 py-2 ${event.kind === 'day' ? 'timeline-transfer-day-badge' : 'bg-[var(--color-paper)]'}`}>
           <Icon className={`mt-1 h-6 w-6 shrink-0 ${event.kind === 'day' ? 'text-white' : 'text-[var(--color-forest)]'}`} aria-hidden />
           <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold">{event.kind === 'day' ? 'Giorno di trasferimento' : 'Trasferta notturna'}</p>
+          {event.kind === 'night' ? <button type="button" className="flex min-h-7 w-full items-center justify-between gap-2 text-left" aria-expanded={nightExpanded} aria-controls={detailsId} title={nightExpanded ? 'Comprimi trasferta notturna' : 'Espandi trasferta notturna'} onClick={() => setExpandedNightTransfers((current) => {
+            const next = new Set(current)
+            if (next.has(event.id)) next.delete(event.id)
+            else next.add(event.id)
+            return next
+          })}>
+            <span className="text-sm font-bold">Trasferta notturna</span>
+            {nightExpanded ? <ChevronUp className="h-4 w-4 shrink-0" aria-hidden /> : <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />}
+          </button> : <p className="text-sm font-bold">Giorno di trasferimento</p>}
           <p className={`text-xs ${event.kind === 'day' ? 'text-white/90' : 'text-[var(--color-mute)]'}`}>{from} → {to} · {event.kind === 'day' ? `Giorno ${day + 1}` : 'Senza giorni aggiuntivi'}{date ? ` · ${formatDate(date)}` : ''}</p>
-          {event.notes ? <p className="mt-2 whitespace-pre-wrap break-words text-sm">{event.notes}</p> : null}
-          {onChange ? <div className="mt-2 flex gap-3 text-xs">
-            <button type="button" className="min-h-9 underline" disabled={disabled} onClick={() => { setDraft({ ...event }); setError('') }}>Modifica note</button>
-            <button type="button" className="min-h-9 text-red-700 underline" disabled={disabled} onClick={() => void save(events.filter((item) => item.id !== event.id))}>Rimuovi</button>
-          </div> : null}
+          <div id={event.kind === 'night' ? detailsId : undefined} className={event.kind === 'night' ? 'phone-port:hidden' : undefined}>
+            {event.notes ? <p className="mt-2 whitespace-pre-wrap break-words text-sm">{event.notes}</p> : null}
+            {onChange ? <div className="mt-2 flex gap-3 text-xs">
+              <button type="button" className="min-h-9 underline" disabled={disabled} onClick={() => { setDraft({ ...event }); setError('') }}>Modifica note</button>
+              <button type="button" className="min-h-9 text-red-700 underline" disabled={disabled} onClick={() => void save(events.filter((item) => item.id !== event.id))}>Rimuovi</button>
+            </div> : null}
+          </div>
           </div>
         </div>
       </div>
     })}
-    {onChange && !draft && events.length < 30 ? <div className="flex flex-wrap gap-2 py-1 phone-port:!justify-end">
+    {onChange && !draft && events.length < 30 ? <div className="flex flex-wrap justify-center gap-2 py-1 phone-port:!justify-end">
       <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs phone-port:!h-10 phone-port:!w-10 phone-port:!justify-center phone-port:!p-0" disabled={disabled} title="Aggiungi giorno di trasferimento" aria-label="Aggiungi giorno di trasferimento" onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'day', notes: '' })}><Truck className="h-4 w-4" aria-hidden /><span className="phone-port:!hidden">+ Giorno di trasferimento</span></button>
       {!events.some((event) => event.kind === 'night') ? <button type="button" className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--color-line)] px-3 text-xs phone-port:!h-10 phone-port:!w-10 phone-port:!justify-center phone-port:!p-0" disabled={disabled} title="Aggiungi trasferta notturna" aria-label="Aggiungi trasferta notturna" onClick={() => setDraft({ id: crypto.randomUUID(), kind: 'night', notes: '' })}><Moon className="h-4 w-4" aria-hidden /><span className="phone-port:!hidden">+ Trasferta notturna</span></button> : null}
     </div> : null}
